@@ -19,4 +19,11 @@ class Datasets:
 
         return df
 
-    # def extract_data_for_provision_types_and_places(self):
+    def extract_data_for_provision_types_and_places(self):
+        df = pd.read_excel(
+            self.filepath,
+            "Provider_level_at_31_Mar_2022",
+            header=4,
+        )
+
+        return df

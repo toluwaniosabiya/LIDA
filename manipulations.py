@@ -23,3 +23,21 @@ class BarChartBuilder:
         series = self.dataset[column].value_counts(normalize=True) * 100
 
         return series
+
+
+class TableBuilder:
+    def __init__(
+        self, dataset: pd.DataFrame = datasets.extract_data_for_provision_types_and_places()
+    ) -> None:
+        self.dataset = dataset
+
+    def calculate_total_number_of_facilities(self) -> int:
+        df = self.dataset
+
+        return len(df["Provision type"])
+
+    def calculate_provision_types_breakdown(self):
+        df = self.dataset
+        provision_type_breakdown = df["Provision type"].value_counts()
+
+        return provision_type_breakdown
