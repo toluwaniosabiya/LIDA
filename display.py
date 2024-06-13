@@ -1,14 +1,30 @@
 import dash  # type: ignore
-from dash import dcc, html, Output, Input  # type: ignore
+from dash import dcc, html, Output, Input, dash_table  # type: ignore
 import dash_bootstrap_components as dbc  # type: ignore
 import plotly.express as px  # type: ignore
 
 # import pandas as pd  # type: ignore
 
 
-from manipulations import BarChartBuilder
+from manipulations import BarChartBuilder, TableBuilder
 
 bar_chart_builder = BarChartBuilder()
+table_builder = TableBuilder()
+
+
+# Define functions that do not require callback
+def display_provision_type_table():
+    df = table_builder.calculate_provision_types_breakdown().to_frame().reset_index()
+    df.columns = ["Provision Type", "Count"]
+    data = df.to_dict("records")
+
+    return data
+
+
+def display_facilities_count():
+
+    return f"Total Number of Facilities: {table_builder.calculate_total_number_of_facilities()}"
+
 
 # Initialize the app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -78,8 +94,23 @@ app.layout = dbc.Container(
         # Row 4: Two columns containing tables
         dbc.Row(
             [
-                dbc.Col(html.Table(id="table-1"), width=6),
-                dbc.Col(html.Table(id="table-2"), width=6),
+                dbc.Col(
+                    dcc.Markdown(
+                        display_facilities_count(),
+                        id="facilities-count",
+                    ),
+                    width=1,
+                ),
+                dbc.Col(
+                    dash_table.DataTable(
+                        data=display_provision_type_table(),
+                        id="table-1",
+                        style_cell={"textAlign": "left"},
+                    ),
+                    width=5,
+                ),
+                dbc.Col(dcc.Markdown(id="markdown-2"), width=1),
+                dbc.Col(dash_table.DataTable(id="table-2"), width=5),
             ]
         ),
         html.Div(style={"height": "20px"}),
