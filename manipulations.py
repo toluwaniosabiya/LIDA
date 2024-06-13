@@ -68,8 +68,15 @@ class LAFilter:
 
         return filtered_dataset
 
-    def get_la_dropdown_menu(self):
+    def get_la_dropdown_options(self):
         dropdown_list = self.dataset["Local authority"].unique().tolist()
         dropdown_options = [{"label": f"{item}", "value": f"{item}"} for item in dropdown_list]
+
+        return dropdown_options
+
+    def get_la_effectiveness_dropdown_options(self):
+        dropdown_list = self.dataset.columns[-5:].tolist()
+        dropdown_options = [{"label": f"{item}", "value": f"{item}"} for item in dropdown_list]
+        del dropdown_options[1:3]
 
         return dropdown_options

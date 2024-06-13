@@ -93,7 +93,7 @@ app.layout = dbc.Container(
                             [
                                 dbc.Col(
                                     dcc.Dropdown(
-                                        id="effectiveness",
+                                        id="effectiveness-dropdown",
                                         options=bar_chart_builder.get_dropdown_options(),
                                         value=bar_chart_builder.get_dropdown_options()[0]["value"],
                                     ),
@@ -152,21 +152,23 @@ app.layout = dbc.Container(
         ),
         html.Div(style={"height": "20px"}),
         html.Hr(),
-        html.Div(style={"height": "20px"}),
+        html.Div(style={"height": "50px"}),
         # Row 5: Another h2 level header
         dbc.Row([dbc.Col(html.H2("LA-level Statistics", className="text-center"), width=12)]),
+        html.Div(style={"height": "20px"}),
         dbc.Row(
             [
                 dbc.Col(
                     dcc.Dropdown(
                         id="local-authority",
-                        options=la_filter.get_la_dropdown_menu(),
-                        value=la_filter.get_la_dropdown_menu()[0]["value"],
+                        options=la_filter.get_la_dropdown_options(),
+                        value=la_filter.get_la_dropdown_options()[0]["value"],
                     ),
                     width=3,
                 )
             ]
         ),
+        html.Div(style={"height": "10px"}),
         # Row 6: Four columns containing tables and markdown
         dbc.Row(
             [
@@ -206,36 +208,21 @@ app.layout = dbc.Container(
                 ),
             ]
         ),
-        # Row 6: Two columns containing markdown text
+        html.Div(style={"height": "50px"}),
         dbc.Row(
             [
                 dbc.Col(
-                    dcc.Markdown("## Markdown Text 1\n\nSome example markdown text here."),
+                    dcc.Dropdown(
+                        id="la-level-effectiveness-dropdown",
+                        options=la_filter.get_la_effectiveness_dropdown_options(),
+                        value=la_filter.get_la_effectiveness_dropdown_options()[0]["value"],
+                    ),
                     width=6,
-                ),
-                dbc.Col(
-                    dcc.Markdown("## Markdown Text 2\n\nSome more example markdown text here."),
-                    width=6,
-                ),
+                )
             ]
         ),
-        # Row 7: Two columns containing tables
-        dbc.Row(
-            [
-                dbc.Col(html.Table(id="table-3"), width=6),
-                dbc.Col(html.Table(id="table-4"), width=6),
-            ]
-        ),
-        # Row 8: Five columns containing markdown text
-        dbc.Row(
-            [
-                dbc.Col(dcc.Markdown("### Markdown 1\n\nText 1"), width=2),
-                dbc.Col(dcc.Markdown("### Markdown 2\n\nText 2"), width=2),
-                dbc.Col(dcc.Markdown("### Markdown 3\n\nText 3"), width=2),
-                dbc.Col(dcc.Markdown("### Markdown 4\n\nText 4"), width=2),
-                dbc.Col(dcc.Markdown("### Markdown 5\n\nText 5"), width=2),
-            ]
-        ),
+        # Row 6: la-level bar charts
+        dbc.Row([dbc.Col(dcc.Graph(id="la-level-effectiveness"), width=12)]),
     ],
     fluid=True,
 )
@@ -243,17 +230,18 @@ app.layout = dbc.Container(
 
 @app.callback(
     Output("outcome", "figure"),
-    Input("effectiveness", "value"),
+    Input("effectiveness-dropdown", "value"),
 )
 def display_bar_chart(drop_down_option: str):
     series = bar_chart_builder.supply_bar_chart_info(column=drop_down_option)
     fig = px.bar(
         series,
         color=series.index,
-        title=drop_down_option,
+        title="",
     )
 
     fig.update_layout(
+        yaxis_title="Percentage (%)",
         xaxis=dict(
             tickvals=[],  # Empty list to hide x-axis tick values
             ticktext=[],  # Empty list to hide x-axis tick labels
