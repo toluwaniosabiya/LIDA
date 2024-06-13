@@ -26,6 +26,19 @@ def display_facilities_count():
     return f"Total Number of Facilities: {table_builder.calculate_total_number_of_facilities()}"
 
 
+def display_provision_places_count():
+
+    return f"Total Number of Places: {table_builder.calculate_total_number_of_places()}"
+
+
+def display_places_by_provision_type_table():
+    df = table_builder.calculate_places_by_provision_type().to_frame().reset_index()
+    df.columns = ["Provision Type", "Places"]
+    data = df.to_dict("records")
+
+    return data
+
+
 # Initialize the app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -91,7 +104,7 @@ app.layout = dbc.Container(
                 ),
             ]
         ),
-        # Row 4: Two columns containing tables
+        # Row 4: Four columns containing tables and markdown
         dbc.Row(
             [
                 dbc.Col(
@@ -104,13 +117,34 @@ app.layout = dbc.Container(
                 dbc.Col(
                     dash_table.DataTable(
                         data=display_provision_type_table(),
-                        id="table-1",
-                        style_cell={"textAlign": "left"},
+                        id="provision-types",
+                        style_cell={
+                            "textAlign": "left",
+                            "maxWidth": "150px",
+                            "whiteSpace": "normal",
+                        },
                     ),
                     width=5,
                 ),
-                dbc.Col(dcc.Markdown(id="markdown-2"), width=1),
-                dbc.Col(dash_table.DataTable(id="table-2"), width=5),
+                dbc.Col(
+                    dcc.Markdown(
+                        display_provision_places_count(),
+                        id="places-count",
+                    ),
+                    width=1,
+                ),
+                dbc.Col(
+                    dash_table.DataTable(
+                        data=display_places_by_provision_type_table(),
+                        id="places-by-provision-type",
+                        style_cell={
+                            "textAlign": "left",
+                            "maxWidth": "150px",
+                            "whiteSpace": "normal",
+                        },
+                    ),
+                    width=5,
+                ),
             ]
         ),
         html.Div(style={"height": "20px"}),
