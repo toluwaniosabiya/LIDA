@@ -41,3 +41,14 @@ class TableBuilder:
         provision_type_breakdown = df["Provision type"].value_counts()
 
         return provision_type_breakdown
+
+    def calculate_total_number_of_places(self):
+        df = self.dataset
+
+        return df["Places"].sum()
+
+    def calculate_places_by_provision_type(self):
+        df = self.dataset
+        data = df.groupby("Provision type")["Places"].sum()
+
+        return data
