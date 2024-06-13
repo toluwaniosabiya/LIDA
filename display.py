@@ -1,8 +1,9 @@
-import dash
-from dash import dcc, html, Output, Input
-import dash_bootstrap_components as dbc
-import plotly.express as px
-import pandas as pd
+import dash  # type: ignore
+from dash import dcc, html, Output, Input  # type: ignore
+import dash_bootstrap_components as dbc  # type: ignore
+import plotly.express as px  # type: ignore
+
+# import pandas as pd  # type: ignore
 
 
 from manipulations import BarChartBuilder
@@ -15,12 +16,20 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout = dbc.Container(
     [
         # Row 1: General title for the app
-        dbc.Row([dbc.Col(html.H1("General Title for the App"), width=12)]),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.H1("Overview Statistics from the 2022 OFSTED Data", className="text-center"),
+                    width=12,
+                )
+            ]
+        ),
+        html.Div(style={"height": "20px"}),
         # Row 2: h2 level header
         dbc.Row(
             [
-                dbc.Col(html.H2("Subheading 1"), width=6),
-                dbc.Col(html.H2("Subheading 2"), width=6),
+                dbc.Col(html.H2("The United Kingdom at a Glance", className="text-center"), width=6),
+                dbc.Col(html.H2("Social Care Effectiveness", className="text-center"), width=6),
             ]
         ),
         # Row 3: Two columns, each containing a drop-down menu and a graph/figure
@@ -73,6 +82,7 @@ app.layout = dbc.Container(
                 dbc.Col(html.Table(id="table-2"), width=6),
             ]
         ),
+        html.Div(style={"height": "20px"}),
         # Row 5: Another h2 level header
         dbc.Row([dbc.Col(html.H2("Subheading 2"), width=12)]),
         # Row 6: Two columns containing markdown text
