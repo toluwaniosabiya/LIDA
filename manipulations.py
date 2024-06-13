@@ -6,9 +6,10 @@ datasets = Datasets()
 
 
 class BarChartBuilder:
+
     def __init__(
         self,
-        dataset: pd.DataFrame = datasets.extract_data_for_bar_charts(),
+        dataset: pd.DataFrame = datasets.extract_data_for_national_effectiveness(),
     ) -> None:
         self.dataset = dataset
 
