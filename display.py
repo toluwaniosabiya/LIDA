@@ -166,6 +166,49 @@ app.layout = dbc.Container(
                 )
             ]
         ),
+        # Row 6: Four columns containing tables and markdown
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Markdown(
+                        display_facilities_count(table_builder.dataset),
+                        id="la-facilities-count",
+                    ),
+                    width=1,
+                ),
+                dbc.Col(
+                    dash_table.DataTable(
+                        data=display_provision_type_table(table_builder.dataset),
+                        id="la-provision-types",
+                        style_cell={
+                            "textAlign": "left",
+                            "maxWidth": "150px",
+                            "whiteSpace": "normal",
+                        },
+                    ),
+                    width=5,
+                ),
+                dbc.Col(
+                    dcc.Markdown(
+                        display_provision_places_count(table_builder.dataset),
+                        id="la-places-count",
+                    ),
+                    width=1,
+                ),
+                dbc.Col(
+                    dash_table.DataTable(
+                        data=display_places_by_provision_type_table(table_builder.dataset),
+                        id="la-places-by-provision-type",
+                        style_cell={
+                            "textAlign": "left",
+                            "maxWidth": "150px",
+                            "whiteSpace": "normal",
+                        },
+                    ),
+                    width=5,
+                ),
+            ]
+        ),
         # Row 6: Two columns containing markdown text
         dbc.Row(
             [
