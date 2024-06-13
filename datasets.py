@@ -1,10 +1,12 @@
 import pandas as pd  # type: ignore
 
+filepath: str = "data/Childrens_social_care_in_England_2022_underlying_data.xlsx"
+
 
 class Datasets:
+
     def __init__(
         self,
-        filepath: str = "data/Childrens_social_care_in_England_2022_underlying_data.xlsx",
     ) -> None:
         self.filepath = filepath
 
