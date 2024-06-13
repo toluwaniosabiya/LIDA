@@ -6,10 +6,11 @@ import plotly.express as px  # type: ignore
 # import pandas as pd  # type: ignore
 
 
-from manipulations import BarChartBuilder, TableBuilder
+from manipulations import BarChartBuilder, TableBuilder, LAFilter
 
 bar_chart_builder = BarChartBuilder()
 table_builder = TableBuilder()
+la_filter = LAFilter()
 
 
 # Define functions that do not require callback
@@ -158,9 +159,9 @@ app.layout = dbc.Container(
             [
                 dbc.Col(
                     dcc.Dropdown(
-                        id="pass",
-                        options=bar_chart_builder.get_dropdown_options(),
-                        value=bar_chart_builder.get_dropdown_options()[0]["value"],
+                        id="local-authority",
+                        options=la_filter.get_la_dropdown_menu(),
+                        value=la_filter.get_la_dropdown_menu()[0]["value"],
                     ),
                     width=3,
                 )
@@ -171,14 +172,12 @@ app.layout = dbc.Container(
             [
                 dbc.Col(
                     dcc.Markdown(
-                        display_facilities_count(table_builder.dataset),
                         id="la-facilities-count",
                     ),
                     width=1,
                 ),
                 dbc.Col(
                     dash_table.DataTable(
-                        data=display_provision_type_table(table_builder.dataset),
                         id="la-provision-types",
                         style_cell={
                             "textAlign": "left",
@@ -190,14 +189,12 @@ app.layout = dbc.Container(
                 ),
                 dbc.Col(
                     dcc.Markdown(
-                        display_provision_places_count(table_builder.dataset),
                         id="la-places-count",
                     ),
                     width=1,
                 ),
                 dbc.Col(
                     dash_table.DataTable(
-                        data=display_places_by_provision_type_table(table_builder.dataset),
                         id="la-places-by-provision-type",
                         style_cell={
                             "textAlign": "left",
@@ -267,6 +264,23 @@ def display_bar_chart(drop_down_option: str):
     )
 
     return fig
+
+
+@app.callback(
+    Output("la-facilities-count", "children"),
+    Output("la-provision-types", "data"),
+    Output("la-places-count", "children"),
+    Output("la-places-by-provision-type", "data"),
+    Input("local-authority", "value"),
+)
+def display_la_level_provision_type_and_places_statistics(local_authority: str):
+    df = la_filter.filter_dataset_by_LA(local_authority=local_authority)
+    facilities_count = display_facilities_count(df)
+    provision_type_table = display_provision_type_table(df)
+    places_count = display_provision_places_count(df)
+    places_by_provision_type = display_places_by_provision_type_table(df)
+
+    return facilities_count, provision_type_table, places_count, places_by_provision_type
 
 
 if __name__ == "__main__":

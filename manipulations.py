@@ -26,8 +26,10 @@ class BarChartBuilder:
 
 
 class TableBuilder:
+
     def __init__(
-        self, dataset: pd.DataFrame = datasets.extract_data_for_provision_types_and_places()
+        self,
+        dataset: pd.DataFrame = datasets.extract_data_for_provision_types_and_places(),
     ) -> None:
         self.dataset = dataset
 
@@ -43,9 +45,9 @@ class TableBuilder:
         return provision_type_breakdown
 
     def calculate_total_number_of_places(self, dataset: pd.DataFrame):
-        df = self.dataset
+        df = dataset
 
-        return df["Places"].sum()
+        return int(df["Places"].sum())
 
     def calculate_places_by_provision_type(self, dataset: pd.DataFrame):
         df = dataset
@@ -53,7 +55,21 @@ class TableBuilder:
 
         return data
 
+
+class LAFilter:
+    def __init__(
+        self,
+        dataset: pd.DataFrame = datasets.extract_data_for_provision_types_and_places(),
+    ) -> None:
+        self.dataset = dataset
+
     def filter_dataset_by_LA(self, local_authority: str):
         filtered_dataset = self.dataset[self.dataset["Local authority"] == local_authority]
 
         return filtered_dataset
+
+    def get_la_dropdown_menu(self):
+        dropdown_list = self.dataset["Local authority"].unique().tolist()
+        dropdown_options = [{"label": f"{item}", "value": f"{item}"} for item in dropdown_list]
+
+        return dropdown_options
