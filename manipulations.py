@@ -31,24 +31,29 @@ class TableBuilder:
     ) -> None:
         self.dataset = dataset
 
-    def calculate_total_number_of_facilities(self) -> int:
-        df = self.dataset
+    def calculate_total_number_of_facilities(self, dataset: pd.DataFrame) -> int:
+        df = dataset
 
         return len(df["Provision type"])
 
-    def calculate_provision_types_breakdown(self):
-        df = self.dataset
+    def calculate_provision_types_breakdown(self, dataset: pd.DataFrame):
+        df = dataset
         provision_type_breakdown = df["Provision type"].value_counts()
 
         return provision_type_breakdown
 
-    def calculate_total_number_of_places(self):
+    def calculate_total_number_of_places(self, dataset: pd.DataFrame):
         df = self.dataset
 
         return df["Places"].sum()
 
-    def calculate_places_by_provision_type(self):
-        df = self.dataset
+    def calculate_places_by_provision_type(self, dataset: pd.DataFrame):
+        df = dataset
         data = df.groupby("Provision type")["Places"].sum()
 
         return data
+
+    def filter_dataset_by_LA(self, local_authority: str):
+        filtered_dataset = self.dataset[self.dataset["Local authority"] == local_authority]
+
+        return filtered_dataset

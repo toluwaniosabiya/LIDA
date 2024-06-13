@@ -13,26 +13,26 @@ table_builder = TableBuilder()
 
 
 # Define functions that do not require callback
-def display_provision_type_table():
-    df = table_builder.calculate_provision_types_breakdown().to_frame().reset_index()
+def display_provision_type_table(data):
+    df = table_builder.calculate_provision_types_breakdown(data).to_frame().reset_index()
     df.columns = ["Provision Type", "Count"]
     data = df.to_dict("records")
 
     return data
 
 
-def display_facilities_count():
+def display_facilities_count(data):
 
-    return f"Total Number of Facilities: {table_builder.calculate_total_number_of_facilities()}"
-
-
-def display_provision_places_count():
-
-    return f"Total Number of Places: {table_builder.calculate_total_number_of_places()}"
+    return f"Total Number of Facilities: {table_builder.calculate_total_number_of_facilities(data)}"
 
 
-def display_places_by_provision_type_table():
-    df = table_builder.calculate_places_by_provision_type().to_frame().reset_index()
+def display_provision_places_count(data):
+
+    return f"Total Number of Places: {table_builder.calculate_total_number_of_places(data)}"
+
+
+def display_places_by_provision_type_table(data):
+    df = table_builder.calculate_places_by_provision_type(data).to_frame().reset_index()
     df.columns = ["Provision Type", "Places"]
     data = df.to_dict("records")
 
@@ -53,6 +53,8 @@ app.layout = dbc.Container(
                 )
             ]
         ),
+        html.Hr(),
+        dbc.Row([dbc.Col(html.H2("National Statistics", className="text-center"), width=12)]),
         html.Div(style={"height": "20px"}),
         # Row 2: h2 level header
         dbc.Row(
@@ -109,14 +111,14 @@ app.layout = dbc.Container(
             [
                 dbc.Col(
                     dcc.Markdown(
-                        display_facilities_count(),
+                        display_facilities_count(table_builder.dataset),
                         id="facilities-count",
                     ),
                     width=1,
                 ),
                 dbc.Col(
                     dash_table.DataTable(
-                        data=display_provision_type_table(),
+                        data=display_provision_type_table(table_builder.dataset),
                         id="provision-types",
                         style_cell={
                             "textAlign": "left",
@@ -128,14 +130,14 @@ app.layout = dbc.Container(
                 ),
                 dbc.Col(
                     dcc.Markdown(
-                        display_provision_places_count(),
+                        display_provision_places_count(table_builder.dataset),
                         id="places-count",
                     ),
                     width=1,
                 ),
                 dbc.Col(
                     dash_table.DataTable(
-                        data=display_places_by_provision_type_table(),
+                        data=display_places_by_provision_type_table(table_builder.dataset),
                         id="places-by-provision-type",
                         style_cell={
                             "textAlign": "left",
@@ -148,8 +150,22 @@ app.layout = dbc.Container(
             ]
         ),
         html.Div(style={"height": "20px"}),
+        html.Hr(),
+        html.Div(style={"height": "20px"}),
         # Row 5: Another h2 level header
-        dbc.Row([dbc.Col(html.H2("Subheading 2"), width=12)]),
+        dbc.Row([dbc.Col(html.H2("LA-level Statistics", className="text-center"), width=12)]),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="pass",
+                        options=bar_chart_builder.get_dropdown_options(),
+                        value=bar_chart_builder.get_dropdown_options()[0]["value"],
+                    ),
+                    width=3,
+                )
+            ]
+        ),
         # Row 6: Two columns containing markdown text
         dbc.Row(
             [
