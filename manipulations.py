@@ -80,3 +80,8 @@ class LAFilter:
         del dropdown_options[1:3]
 
         return dropdown_options
+
+    def supply_la_level_bar_chart_info(self, data: pd.DataFrame, column: str):
+        series = data[column].value_counts(normalize=True) * 100
+
+        return series
